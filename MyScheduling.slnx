@@ -1,16 +1,16 @@
 <Solution>
   <Folder Name="/Core/">
-    <Project Path="MyScheduling.Common/MyScheduling.Common.csproj" />
-    <Project Path="MyScheduling.DependencyInjection/MyScheduling.DependencyInjection.csproj" />
+    <Project Path="Core/MyScheduling.Common/MyScheduling.Common.csproj" />
+    <Project Path="Core/MyScheduling.DependencyInjection/MyScheduling.DependencyInjection.csproj" />
   </Folder>
   <Folder Name="/Modules/">
-    <Project Path="MyScheduling.Application/MyScheduling.Application.csproj" />
-    <Project Path="MyScheduling.Data/MyScheduling.Data.csproj" />
-    <Project Path="MyScheduling.Domain/MyScheduling.Domain.csproj" />
-    <Project Path="MyScheduling.Presentations/MyScheduling.Presentations.csproj" />
-    <Project Path="MyScheduling.Service/MyScheduling.Service.csproj" />
+    <Project Path="Modules/MyScheduling.Application/MyScheduling.Application.csproj" />
+    <Project Path="Modules/MyScheduling.Data/MyScheduling.Data.csproj" />
+    <Project Path="Modules/MyScheduling.Domain/MyScheduling.Domain.csproj" />
+    <Project Path="Modules/MyScheduling.Presentations/MyScheduling.Presentations.csproj" />
+    <Project Path="Modules/MyScheduling.Service/MyScheduling.Service.csproj" />
   </Folder>
   <Folder Name="/UI/">
-    <Project Path="MyScheduling.API/MyScheduling.API.csproj" />
+    <Project Path="UI/MyScheduling.API/MyScheduling.API.csproj" />
   </Folder>
 </Solution>
