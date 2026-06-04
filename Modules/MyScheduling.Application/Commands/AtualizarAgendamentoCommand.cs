@@ -1,10 +1,11 @@
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace MyScheduling.Application.Agendamentos.Commands.CreateAgendamento;
+namespace MyScheduling.Application.Agendamentos.Commands;
 
-public sealed record CreateAgendamentoCommand
+public sealed record AtualizarAgendamentoCommand
 {
+    public Guid Id { get; init; }
     public string ClienteNome { get; init; } = string.Empty;
     public string? ClienteTelefone { get; init; }
     public string Servico { get; init; } = string.Empty;
@@ -15,10 +16,13 @@ public sealed record CreateAgendamentoCommand
 
     public ValidationResult Validate() => new Validator().Validate(this);
 
-    internal sealed class Validator : AbstractValidator<CreateAgendamentoCommand>
+    internal sealed class Validator : AbstractValidator<AtualizarAgendamentoCommand>
     {
         public Validator()
         {
+            RuleFor(c => c.Id)
+                .NotEmpty().WithMessage("O identificador do agendamento é obrigatório.");
+
             RuleFor(c => c.ClienteNome)
                 .NotEmpty().WithMessage("O nome do cliente é obrigatório.")
                 .MaximumLength(200).WithMessage("O nome do cliente deve ter no máximo 200 caracteres.");

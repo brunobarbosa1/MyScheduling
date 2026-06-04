@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Modules\MyScheduling.Data\MyScheduling.Data.csproj" />
+        <ProjectReference Include="..\..\Core\MyScheduling.DependencyInjection\MyScheduling.DependencyInjection.csproj" />
         <ProjectReference Include="..\..\Modules\MyScheduling.Application\MyScheduling.Application.csproj" />
     </ItemGroup>
 

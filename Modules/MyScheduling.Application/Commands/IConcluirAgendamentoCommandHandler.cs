@@ -1,11 +1,11 @@
 using MyScheduling.Common.Results;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Commands.CreateAgendamento;
+namespace MyScheduling.Application.Agendamentos.Commands;
 
-public interface ICreateAgendamentoCommandHandler
+public interface IConcluirAgendamentoCommandHandler
 {
     Task<Result<AgendamentoViewModel>> Handle(
-        CreateAgendamentoCommand command,
+        ConcluirAgendamentoCommand command,
         CancellationToken cancellationToken = default);
 }

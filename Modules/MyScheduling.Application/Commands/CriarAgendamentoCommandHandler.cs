@@ -3,14 +3,14 @@ using MyScheduling.Domain.Entities;
 using MyScheduling.Domain.Repositories;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Commands.CreateAgendamento;
+namespace MyScheduling.Application.Agendamentos.Commands;
 
-public sealed class CreateAgendamentoCommandHandler : ICreateAgendamentoCommandHandler
+public sealed class CriarAgendamentoCommandHandler : ICriarAgendamentoCommandHandler
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly TimeProvider _timeProvider;
 
-    public CreateAgendamentoCommandHandler(
+    public CriarAgendamentoCommandHandler(
         IAgendamentoRepository agendamentoRepository,
         TimeProvider timeProvider)
     {
@@ -19,7 +19,7 @@ public sealed class CreateAgendamentoCommandHandler : ICreateAgendamentoCommandH
     }
 
     public async Task<Result<AgendamentoViewModel>> Handle(
-        CreateAgendamentoCommand command,
+        CriarAgendamentoCommand command,
         CancellationToken cancellationToken = default)
     {
         var validation = command.Validate();
