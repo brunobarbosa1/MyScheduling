@@ -9,6 +9,8 @@ internal sealed class FakeAgendamentoRepository : IAgendamentoRepository
     public bool ExisteSobreposicao { get; set; }
     public int SaveCount { get; private set; }
 
+    public IQueryable<Agendamento> Query() => Salvos.AsQueryable();
+
     public Task<bool> ExisteSobreposicaoAsync(
         DateTimeOffset dataHoraInicio,
         DateTimeOffset dataHoraFim,

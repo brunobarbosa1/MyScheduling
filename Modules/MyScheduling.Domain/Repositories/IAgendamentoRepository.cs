@@ -4,6 +4,8 @@ namespace MyScheduling.Domain.Repositories;
 
 public interface IAgendamentoRepository
 {
+    IQueryable<Agendamento> Query();
+
     Task<bool> ExisteSobreposicaoAsync(
         DateTimeOffset dataHoraInicio,
         DateTimeOffset dataHoraFim,

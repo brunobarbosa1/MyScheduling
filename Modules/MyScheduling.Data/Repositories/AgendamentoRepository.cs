@@ -15,6 +15,11 @@ public class AgendamentoRepository : IAgendamentoRepository
         _context = context;
     }
 
+    public IQueryable<Agendamento> Query()
+    {
+        return _context.Agendamentos;
+    }
+
     public Task<bool> ExisteSobreposicaoAsync(
         DateTimeOffset dataHoraInicio,
         DateTimeOffset dataHoraFim,
