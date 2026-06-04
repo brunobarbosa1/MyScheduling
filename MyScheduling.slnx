@@ -10,6 +10,9 @@
     <Project Path="Modules/MyScheduling.Presentations/MyScheduling.Presentations.csproj" />
     <Project Path="Modules/MyScheduling.Service/MyScheduling.Service.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MyScheduling.Tests/MyScheduling.Tests.csproj" />
+  </Folder>
   <Folder Name="/UI/">
     <Project Path="UI/MyScheduling.API/MyScheduling.API.csproj" />
   </Folder>
