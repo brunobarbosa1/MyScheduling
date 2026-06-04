@@ -19,4 +19,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\Modules\MyScheduling.Data\MyScheduling.Data.csproj" />
+        <ProjectReference Include="..\..\Modules\MyScheduling.Application\MyScheduling.Application.csproj" />
+    </ItemGroup>
+
 </Project>
