@@ -8,7 +8,6 @@
     <Project Path="Modules/MyScheduling.Data/MyScheduling.Data.csproj" />
     <Project Path="Modules/MyScheduling.Domain/MyScheduling.Domain.csproj" />
     <Project Path="Modules/MyScheduling.Presentations/MyScheduling.Presentations.csproj" />
-    <Project Path="Modules/MyScheduling.Service/MyScheduling.Service.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MyScheduling.Tests/MyScheduling.Tests.csproj" />
