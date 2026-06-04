@@ -1,7 +1,7 @@
 using MyScheduling.Common.Results;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Commands;
+namespace MyScheduling.Application.Commands;
 
 public interface ICancelarAgendamentoCommandHandler
 {

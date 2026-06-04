@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using MyScheduling.Domain.Entities;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Queries;
+namespace MyScheduling.Application.Queries;
 
 internal static class AgendamentoProjections
 {

@@ -3,7 +3,7 @@ using MyScheduling.Domain.Entities;
 using MyScheduling.Domain.Repositories;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Commands;
+namespace MyScheduling.Application.Commands;
 
 public sealed class CriarAgendamentoCommandHandler : ICriarAgendamentoCommandHandler
 {

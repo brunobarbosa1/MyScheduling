@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyScheduling.Application.Agendamentos.Commands;
+using MyScheduling.Application.Commands;
 
 namespace MyScheduling.DependencyInjection.Commands;
 

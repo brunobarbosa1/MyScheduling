@@ -1,4 +1,4 @@
-using MyScheduling.Application.Agendamentos.Commands;
+using MyScheduling.Application.Commands;
 using MyScheduling.Domain.Entities;
 using MyScheduling.Domain.Enums;
 using Xunit;

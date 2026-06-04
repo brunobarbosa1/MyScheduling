@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace MyScheduling.Application.Agendamentos.Commands;
+namespace MyScheduling.Application.Commands;
 
 public sealed record CancelarAgendamentoCommand
 {

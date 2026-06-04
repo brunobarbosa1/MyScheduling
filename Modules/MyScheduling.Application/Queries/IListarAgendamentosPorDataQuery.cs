@@ -1,7 +1,8 @@
 using MyScheduling.Common.Results;
+using MyScheduling.Application.Filters;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Queries;
+namespace MyScheduling.Application.Queries;
 
 public interface IListarAgendamentosPorDataQuery
 {

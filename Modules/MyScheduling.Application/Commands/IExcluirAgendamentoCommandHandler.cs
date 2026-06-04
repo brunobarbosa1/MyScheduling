@@ -1,6 +1,6 @@
 using MyScheduling.Common.Results;
 
-namespace MyScheduling.Application.Agendamentos.Commands;
+namespace MyScheduling.Application.Commands;
 
 public interface IExcluirAgendamentoCommandHandler
 {

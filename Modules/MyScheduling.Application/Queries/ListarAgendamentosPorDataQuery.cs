@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using MyScheduling.Application.Filters;
 using MyScheduling.Common.Results;
 using MyScheduling.Domain.Repositories;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Queries;
+namespace MyScheduling.Application.Queries;
 
 public sealed class ListarAgendamentosPorDataQuery : IListarAgendamentosPorDataQuery
 {

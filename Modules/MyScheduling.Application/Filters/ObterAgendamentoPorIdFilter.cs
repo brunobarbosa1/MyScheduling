@@ -1,4 +1,4 @@
-namespace MyScheduling.Application.Agendamentos.Queries;
+namespace MyScheduling.Application.Filters;
 
 public sealed record ObterAgendamentoPorIdFilter
 {

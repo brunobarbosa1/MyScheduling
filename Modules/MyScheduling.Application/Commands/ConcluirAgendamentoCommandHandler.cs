@@ -2,7 +2,7 @@ using MyScheduling.Common.Results;
 using MyScheduling.Domain.Repositories;
 using MyScheduling.Presentations.Agendamentos;
 
-namespace MyScheduling.Application.Agendamentos.Commands;
+namespace MyScheduling.Application.Commands;
 
 public sealed class ConcluirAgendamentoCommandHandler : IConcluirAgendamentoCommandHandler
 {
