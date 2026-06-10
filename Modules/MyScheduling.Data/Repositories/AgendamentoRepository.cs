@@ -8,9 +8,9 @@ namespace MyScheduling.Data.Repositories;
 
 public class AgendamentoRepository : IAgendamentoRepository
 {
-    private readonly AgendamentoContext _context;
+    private readonly AppDbContext _context;
 
-    public AgendamentoRepository(AgendamentoContext context)
+    public AgendamentoRepository(AppDbContext context)
     {
         _context = context;
     }

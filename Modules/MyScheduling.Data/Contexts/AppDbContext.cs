@@ -3,17 +3,18 @@ using MyScheduling.Domain.Entities;
 
 namespace MyScheduling.Data.Contexts;
 
-public class AgendamentoContext : DbContext
+public class AppDbContext : DbContext
 {
-    public AgendamentoContext(DbContextOptions<AgendamentoContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
     public DbSet<Agendamento> Agendamentos => Set<Agendamento>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AgendamentoContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }

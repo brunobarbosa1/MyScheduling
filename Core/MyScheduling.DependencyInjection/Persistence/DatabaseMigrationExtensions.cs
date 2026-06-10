@@ -12,7 +12,7 @@ public static class DatabaseMigrationExtensions
     public static void MigrateDatabase(this IServiceProvider services)
     {
         using var scope = services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<AgendamentoContext>();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.Migrate();
     }
 }

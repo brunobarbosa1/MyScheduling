@@ -8,7 +8,7 @@ public static class DbContextConfiguration
 {
     public static IServiceCollection ConfigureDbContext(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<AgendamentoContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
         return services;
     }

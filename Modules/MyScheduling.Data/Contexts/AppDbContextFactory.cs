@@ -9,18 +9,18 @@ namespace MyScheduling.Data.Contexts;
 /// na ausência dela, usa um valor local padrão (não é necessário um banco ativo
 /// para gerar migrations).
 /// </summary>
-public sealed class AgendamentoContextFactory : IDesignTimeDbContextFactory<AgendamentoContext>
+public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
-    public AgendamentoContext CreateDbContext(string[] args)
+    public AppDbContext CreateDbContext(string[] args)
     {
         var connectionString =
             Environment.GetEnvironmentVariable("ConnectionStrings__Postgres")
             ?? "Host=localhost;Port=5432;Database=myscheduling;Username=myscheduling;Password=postgres";
 
-        var options = new DbContextOptionsBuilder<AgendamentoContext>()
+        var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseNpgsql(connectionString)
             .Options;
 
-        return new AgendamentoContext(options);
+        return new AppDbContext(options);
     }
 }
