@@ -1,6 +1,59 @@
-@MyScheduling.API_HostAddress = http://localhost:5167
+@MyScheduling.API_HostAddress = http://localhost:8080
+@agendamentoId = 00000000-0000-0000-0000-000000000000
 
-GET {{MyScheduling.API_HostAddress}}/weatherforecast/
+### Listar todos os agendamentos
+GET {{MyScheduling.API_HostAddress}}/api/v1/agendamentos
 Accept: application/json
+
+### Listar agendamentos filtrando por status (Agendado | Concluido | Cancelado)
+GET {{MyScheduling.API_HostAddress}}/api/v1/agendamentos?status=Agendado
+Accept: application/json
+
+### Listar agendamentos por data
+GET {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/data/2026-07-27
+Accept: application/json
+
+### Obter agendamento por id
+GET {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/{{agendamentoId}}
+Accept: application/json
+
+### Criar agendamento
+POST {{MyScheduling.API_HostAddress}}/api/v1/agendamentos
+Content-Type: application/json
+
+{
+  "clienteNome": "Maria Silva",
+  "clienteTelefone": "11999998888",
+  "servico": "Corte + Escova",
+  "valorServico": 120.00,
+  "dataHoraInicio": "2026-07-27T14:00:00-03:00",
+  "dataHoraFim": "2026-07-27T15:30:00-03:00",
+  "tipoPagamento": "PIX",
+  "observacao": "Cliente prefere atendimento sem secador."
+}
+
+### Atualizar agendamento
+PUT {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/{{agendamentoId}}
+Content-Type: application/json
+
+{
+  "clienteNome": "Maria Silva",
+  "clienteTelefone": "11999998888",
+  "servico": "Coloração",
+  "valorServico": 250.00,
+  "dataHoraInicio": "2026-07-27T16:00:00-03:00",
+  "dataHoraFim": "2026-07-27T18:00:00-03:00",
+  "tipoPagamento": "CREDITO",
+  "observacao": "Reagendado a pedido da cliente."
+}
+
+### Cancelar agendamento
+PATCH {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/{{agendamentoId}}/cancelar
+
+### Concluir agendamento
+PATCH {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/{{agendamentoId}}/concluir
+
+### Excluir agendamento
+DELETE {{MyScheduling.API_HostAddress}}/api/v1/agendamentos/{{agendamentoId}}
 
 ###

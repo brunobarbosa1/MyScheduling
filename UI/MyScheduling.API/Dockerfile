@@ -15,7 +15,6 @@ COPY Core/MyScheduling.Common/MyScheduling.Common.csproj Core/MyScheduling.Commo
 COPY Core/MyScheduling.DependencyInjection/MyScheduling.DependencyInjection.csproj Core/MyScheduling.DependencyInjection/
 COPY Modules/MyScheduling.Domain/MyScheduling.Domain.csproj Modules/MyScheduling.Domain/
 COPY Modules/MyScheduling.Data/MyScheduling.Data.csproj Modules/MyScheduling.Data/
-COPY Modules/MyScheduling.Service/MyScheduling.Service.csproj Modules/MyScheduling.Service/
 COPY Modules/MyScheduling.Application/MyScheduling.Application.csproj Modules/MyScheduling.Application/
 COPY Modules/MyScheduling.Presentations/MyScheduling.Presentations.csproj Modules/MyScheduling.Presentations/
 COPY UI/MyScheduling.API/MyScheduling.API.csproj UI/MyScheduling.API/
