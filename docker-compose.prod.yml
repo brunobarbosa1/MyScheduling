@@ -1,0 +1,55 @@
+# ==========================================================
+# docker-compose de PRODUÇÃO do MyScheduling (PostgreSQL + API).
+#
+# As variáveis vêm do arquivo .env na raiz (criado manualmente
+# na VPS, nunca commitado). Executar a partir da raiz:
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Para derrubar:
+#   docker compose -f docker-compose.prod.yml down
+#
+# O Postgres NÃO é exposto publicamente: a API o acessa pela
+# rede interna do Docker (db:5432). Para acessar o banco da sua
+# máquina, use túnel SSH com a porta em loopback abaixo.
+#
+# TODO(CI/CD): trocar "build:" por "image:" apontando para o
+# registry quando o pipeline de build/push existir.
+# ==========================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: myscheduling-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: UI/MyScheduling.API/Dockerfile
+    container_name: myscheduling-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ConnectionStrings__Postgres: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    ports:
+      - "${API_PORT:-8080}:8080"
+
+volumes:
+  postgres_data:

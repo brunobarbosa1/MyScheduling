@@ -1,0 +1,34 @@
+# ==========================================================
+# docker-compose LOCAL do MyScheduling — apenas o PostgreSQL.
+#
+# A API roda direto na máquina (dotnet run), lendo a connection
+# string de UI/MyScheduling.API/appsettings.Development.json.
+#
+# Subir:    docker compose up -d
+# Derrubar: docker compose down
+#
+# Todos os valores têm default de desenvolvimento; um .env na
+# raiz é opcional e sobrescreve qualquer um deles.
+# ==========================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: myscheduling-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-myscheduling}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-myscheduling}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-myscheduling} -d ${POSTGRES_DB:-myscheduling}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
