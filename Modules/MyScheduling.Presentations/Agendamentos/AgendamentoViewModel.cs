@@ -12,6 +12,7 @@ public sealed class AgendamentoViewModel
     public decimal ValorServico { get; init; }
     public DateTimeOffset DataHoraInicio { get; init; }
     public DateTimeOffset DataHoraFim { get; init; }
+    public TipoPagamento? TipoPagamento { get; init; }
     public StatusAgendamento Status { get; init; }
     public string? Observacao { get; init; }
     public DateTime CriadoEm { get; init; }
@@ -27,6 +28,7 @@ public sealed class AgendamentoViewModel
             ValorServico = agendamento.ValorServico,
             DataHoraInicio = agendamento.DataHoraInicio,
             DataHoraFim = agendamento.DataHoraFim,
+            TipoPagamento = agendamento.TipoPagamento,
             Status = agendamento.Status,
             Observacao = agendamento.Observacao,
             CriadoEm = agendamento.CriadoEm,

@@ -34,6 +34,9 @@ public class AgendamentoMap : IEntityTypeConfiguration<Agendamento>
             .HasColumnType("timestamp with time zone")
             .IsRequired();
 
+        builder.Property(a => a.TipoPagamento)
+            .HasConversion<int?>();
+
         builder.Property(a => a.Status)
             .HasConversion<int>()
             .IsRequired();

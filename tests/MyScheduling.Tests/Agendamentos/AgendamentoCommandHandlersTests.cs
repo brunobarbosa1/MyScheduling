@@ -27,6 +27,7 @@ public class AgendamentoCommandHandlersTests
         valorServico: 80m,
         dataHoraInicio: Agora.AddHours(1),
         dataHoraFim: Agora.AddHours(2),
+        tipoPagamento: null,
         observacao: null);
 
     // ----- Criar -----
@@ -103,6 +104,46 @@ public class AgendamentoCommandHandlersTests
     }
 
     [Fact]
+    public async Task Criar_ComTipoPagamento_PersisteTipoPagamento()
+    {
+        var repo = new FakeAgendamentoRepository();
+        var handler = new CriarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+        var command = ComandoCriarValido() with { TipoPagamento = TipoPagamento.PIX };
+
+        var result = await handler.Handle(command);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(TipoPagamento.PIX, result.Value.TipoPagamento);
+        Assert.Equal(TipoPagamento.PIX, repo.Salvos.Single().TipoPagamento);
+    }
+
+    [Fact]
+    public async Task Criar_SemTipoPagamento_TipoPagamentoNulo()
+    {
+        var repo = new FakeAgendamentoRepository();
+        var handler = new CriarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+
+        var result = await handler.Handle(ComandoCriarValido());
+
+        Assert.True(result.IsSuccess);
+        Assert.Null(result.Value.TipoPagamento);
+    }
+
+    [Fact]
+    public async Task Criar_TipoPagamentoInvalido_RetornaValidacao()
+    {
+        var repo = new FakeAgendamentoRepository();
+        var handler = new CriarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+        var command = ComandoCriarValido() with { TipoPagamento = (TipoPagamento)99 };
+
+        var result = await handler.Handle(command);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("agendamento.validacao", result.Error.Code);
+        Assert.Empty(repo.Salvos);
+    }
+
+    [Fact]
     public async Task Criar_ValorServicoZeroOuNegativo_RetornaValidacao()
     {
         // RN006
@@ -161,6 +202,53 @@ public class AgendamentoCommandHandlersTests
         Assert.Equal("Ana Paula", result.Value.ClienteNome);
         Assert.Equal(150m, result.Value.ValorServico);
         Assert.Equal(1, repo.SaveCount);
+    }
+
+    [Fact]
+    public async Task Atualizar_DefinindoTipoPagamento_AtualizaCampo()
+    {
+        var agendamento = NovoAgendamento();
+        var repo = new FakeAgendamentoRepository();
+        repo.Salvos.Add(agendamento);
+        var handler = new AtualizarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+
+        var result = await handler.Handle(new AtualizarAgendamentoCommand
+        {
+            Id = agendamento.Id,
+            ClienteNome = "Maria",
+            Servico = "Corte",
+            ValorServico = 80m,
+            DataHoraInicio = Agora.AddHours(1),
+            DataHoraFim = Agora.AddHours(2),
+            TipoPagamento = TipoPagamento.DEBITO
+        });
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(TipoPagamento.DEBITO, result.Value.TipoPagamento);
+        Assert.Equal(TipoPagamento.DEBITO, agendamento.TipoPagamento);
+    }
+
+    [Fact]
+    public async Task Atualizar_TipoPagamentoInvalido_RetornaValidacao()
+    {
+        var agendamento = NovoAgendamento();
+        var repo = new FakeAgendamentoRepository();
+        repo.Salvos.Add(agendamento);
+        var handler = new AtualizarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+
+        var result = await handler.Handle(new AtualizarAgendamentoCommand
+        {
+            Id = agendamento.Id,
+            ClienteNome = "Maria",
+            Servico = "Corte",
+            ValorServico = 80m,
+            DataHoraInicio = Agora.AddHours(1),
+            DataHoraFim = Agora.AddHours(2),
+            TipoPagamento = (TipoPagamento)99
+        });
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("agendamento.validacao", result.Error.Code);
     }
 
     [Fact]

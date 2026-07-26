@@ -4,17 +4,18 @@ namespace MyScheduling.Domain.Entities;
 
 public class Agendamento : Entity
 {
-    protected Agendamento() { }
     public string ClienteNome { get; private set; } = null!;
     public string? ClienteTelefone { get; private set; }
     public string Servico { get; private set; } = null!;
     public decimal ValorServico { get; private set; }
     public DateTimeOffset DataHoraInicio { get; private set; }
     public DateTimeOffset DataHoraFim { get; private set; }
+    public TipoPagamento? TipoPagamento { get; private set; }
     public StatusAgendamento Status { get; private set; }
     public string? Observacao { get; private set; }
-
-
+    
+    protected Agendamento() { }
+    
     public static class Factory
     {
         public static Agendamento CriarNovo(
@@ -24,6 +25,7 @@ public class Agendamento : Entity
             decimal valorServico,
             DateTimeOffset dataHoraInicio,
             DateTimeOffset dataHoraFim,
+            TipoPagamento? tipoPagamento,
             string? observacao
         )
         {
@@ -35,6 +37,7 @@ public class Agendamento : Entity
                 ValorServico = valorServico,
                 DataHoraInicio = dataHoraInicio,
                 DataHoraFim = dataHoraFim,
+                TipoPagamento = tipoPagamento,
                 Observacao = observacao,
                 Status = StatusAgendamento.Agendado
             };
@@ -48,6 +51,7 @@ public class Agendamento : Entity
         decimal valorServico,
         DateTimeOffset dataHoraInicio,
         DateTimeOffset dataHoraFim,
+        TipoPagamento? tipoPagamento,
         string? observacao)
     {
         ClienteNome = clienteNome;
@@ -56,6 +60,7 @@ public class Agendamento : Entity
         ValorServico = valorServico;
         DataHoraInicio = dataHoraInicio;
         DataHoraFim = dataHoraFim;
+        TipoPagamento = tipoPagamento;
         Observacao = observacao;
         MarcarComoAtualizado();
     }

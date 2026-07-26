@@ -20,6 +20,7 @@ internal static class AgendamentoProjections
             ValorServico = a.ValorServico,
             DataHoraInicio = a.DataHoraInicio,
             DataHoraFim = a.DataHoraFim,
+            TipoPagamento = a.TipoPagamento,
             Status = a.Status,
             Observacao = a.Observacao,
             CriadoEm = a.CriadoEm,

@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
+using MyScheduling.Domain.Enums;
 
 namespace MyScheduling.Application.Commands;
 
@@ -11,6 +12,7 @@ public sealed record CriarAgendamentoCommand
     public decimal ValorServico { get; init; }
     public DateTimeOffset DataHoraInicio { get; init; }
     public DateTimeOffset DataHoraFim { get; init; }
+    public TipoPagamento? TipoPagamento { get; init; }
     public string? Observacao { get; init; }
 
     public ValidationResult Validate() => new Validator().Validate(this);
@@ -36,6 +38,10 @@ public sealed record CriarAgendamentoCommand
             RuleFor(c => c.DataHoraFim)
                 .GreaterThan(c => c.DataHoraInicio)
                 .WithMessage("A data/hora final deve ser maior que a inicial.");
+
+            RuleFor(c => c.TipoPagamento)
+                .IsInEnum().When(c => c.TipoPagamento.HasValue)
+                .WithMessage("Tipo de pagamento inválido.");
 
             RuleFor(c => c.Observacao)
                 .MaximumLength(500).WithMessage("A observação deve ter no máximo 500 caracteres.");

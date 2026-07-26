@@ -54,6 +54,7 @@ public sealed class AtualizarAgendamentoCommandHandler : IAtualizarAgendamentoCo
             command.ValorServico,
             command.DataHoraInicio,
             command.DataHoraFim,
+            command.TipoPagamento,
             command.Observacao);
 
         await _agendamentoRepository.SaveAsync(cancellationToken);

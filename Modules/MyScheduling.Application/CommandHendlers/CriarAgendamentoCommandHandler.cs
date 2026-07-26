@@ -49,6 +49,7 @@ public sealed class CriarAgendamentoCommandHandler : ICriarAgendamentoCommandHan
             command.ValorServico,
             command.DataHoraInicio,
             command.DataHoraFim,
+            command.TipoPagamento,
             command.Observacao);
 
         _agendamentoRepository.Add(agendamento);
