@@ -147,7 +147,7 @@ ClienteNome é obrigatório.
 
 ### RN006
 
-ValorServico deve ser maior que zero.
+ValorServico é opcional e pode ser definido depois da criação, mas, quando informado, deve ser maior que zero.
 
 ---
 

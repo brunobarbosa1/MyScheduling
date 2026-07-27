@@ -9,7 +9,7 @@ public sealed record CriarAgendamentoCommand
     public string ClienteNome { get; init; } = string.Empty;
     public string? ClienteTelefone { get; init; }
     public string Servico { get; init; } = string.Empty;
-    public decimal ValorServico { get; init; }
+    public decimal? ValorServico { get; init; }
     public DateTimeOffset DataHoraInicio { get; init; }
     public DateTimeOffset DataHoraFim { get; init; }
     public TipoPagamento? TipoPagamento { get; init; }
@@ -33,7 +33,8 @@ public sealed record CriarAgendamentoCommand
                 .MaximumLength(200).WithMessage("O serviço deve ter no máximo 200 caracteres.");
 
             RuleFor(c => c.ValorServico)
-                .GreaterThan(0).WithMessage("O valor do serviço deve ser maior que zero.");
+                .GreaterThan(0).When(c => c.ValorServico.HasValue)
+                .WithMessage("O valor do serviço, quando informado, deve ser maior que zero.");
 
             RuleFor(c => c.DataHoraFim)
                 .GreaterThan(c => c.DataHoraInicio)

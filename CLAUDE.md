@@ -134,7 +134,7 @@ Campos:
 * DataHoraFim deve ser maior que DataHoraInicio.
 * Agendamentos cancelados não bloqueiam horários.
 * ClienteNome é obrigatório.
-* ValorServico deve ser maior que zero.
+* ValorServico é opcional e pode ser definido depois da criação, mas, quando informado, deve ser maior que zero.
 
 ---
 

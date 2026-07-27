@@ -9,7 +9,7 @@ public sealed class AgendamentoViewModel
     public string ClienteNome { get; init; } = string.Empty;
     public string? ClienteTelefone { get; init; }
     public string Servico { get; init; } = string.Empty;
-    public decimal ValorServico { get; init; }
+    public decimal? ValorServico { get; init; }
     public DateTimeOffset DataHoraInicio { get; init; }
     public DateTimeOffset DataHoraFim { get; init; }
     public TipoPagamento? TipoPagamento { get; init; }

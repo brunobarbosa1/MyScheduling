@@ -144,6 +144,51 @@ public class AgendamentoCommandHandlersTests
     }
 
     [Fact]
+    public async Task Criar_SemValorServico_CriaComValorNulo()
+    {
+        var repo = new FakeAgendamentoRepository();
+        var handler = new CriarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+        var command = ComandoCriarValido() with { ValorServico = null };
+
+        var result = await handler.Handle(command);
+
+        Assert.True(result.IsSuccess);
+        Assert.Null(result.Value.ValorServico);
+        Assert.Null(repo.Salvos.Single().ValorServico);
+    }
+
+    [Fact]
+    public async Task Atualizar_DefinindoValorServico_AtualizaCampo()
+    {
+        var agendamento = Agendamento.Factory.CriarNovo(
+            clienteNome: "Maria",
+            clienteTelefone: "11999999999",
+            servico: "Corte",
+            valorServico: null,
+            dataHoraInicio: Agora.AddHours(1),
+            dataHoraFim: Agora.AddHours(2),
+            tipoPagamento: null,
+            observacao: null);
+        var repo = new FakeAgendamentoRepository();
+        repo.Salvos.Add(agendamento);
+        var handler = new AtualizarAgendamentoCommandHandler(repo, new FixedTimeProvider(Agora));
+
+        var result = await handler.Handle(new AtualizarAgendamentoCommand
+        {
+            Id = agendamento.Id,
+            ClienteNome = "Maria",
+            Servico = "Corte",
+            ValorServico = 120m,
+            DataHoraInicio = Agora.AddHours(1),
+            DataHoraFim = Agora.AddHours(2)
+        });
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(120m, result.Value.ValorServico);
+        Assert.Equal(120m, agendamento.ValorServico);
+    }
+
+    [Fact]
     public async Task Criar_ValorServicoZeroOuNegativo_RetornaValidacao()
     {
         // RN006

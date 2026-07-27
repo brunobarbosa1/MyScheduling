@@ -7,7 +7,7 @@ public class Agendamento : Entity
     public string ClienteNome { get; private set; } = null!;
     public string? ClienteTelefone { get; private set; }
     public string Servico { get; private set; } = null!;
-    public decimal ValorServico { get; private set; }
+    public decimal? ValorServico { get; private set; }
     public DateTimeOffset DataHoraInicio { get; private set; }
     public DateTimeOffset DataHoraFim { get; private set; }
     public TipoPagamento? TipoPagamento { get; private set; }
@@ -22,7 +22,7 @@ public class Agendamento : Entity
             string clienteNome,
             string? clienteTelefone,
             string servico,
-            decimal valorServico,
+            decimal? valorServico,
             DateTimeOffset dataHoraInicio,
             DateTimeOffset dataHoraFim,
             TipoPagamento? tipoPagamento,
@@ -48,7 +48,7 @@ public class Agendamento : Entity
         string clienteNome,
         string? clienteTelefone,
         string servico,
-        decimal valorServico,
+        decimal? valorServico,
         DateTimeOffset dataHoraInicio,
         DateTimeOffset dataHoraFim,
         TipoPagamento? tipoPagamento,
