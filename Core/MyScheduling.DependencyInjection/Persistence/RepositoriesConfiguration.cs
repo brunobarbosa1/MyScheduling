@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyScheduling.Data.Repositories;
-using MyScheduling.Domain.Repositories;
+using MyScheduling.Data.Repositories.Agendamentos;
+using MyScheduling.Data.Repositories.Usuarios;
+using MyScheduling.Domain.Repositories.Agendamentos;
+using MyScheduling.Domain.Repositories.Usuarios;
 
 namespace MyScheduling.DependencyInjection.Persistence;
 

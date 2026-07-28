@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MyScheduling.Domain.Entities;
+using MyScheduling.Domain.Entities.Agendamentos;
+using MyScheduling.Domain.Entities.Usuarios;
 
 namespace MyScheduling.Data.Contexts;
 

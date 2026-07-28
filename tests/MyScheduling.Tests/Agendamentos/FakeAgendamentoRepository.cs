@@ -1,5 +1,5 @@
-using MyScheduling.Domain.Entities;
-using MyScheduling.Domain.Repositories;
+using MyScheduling.Domain.Entities.Agendamentos;
+using MyScheduling.Domain.Repositories.Agendamentos;
 
 namespace MyScheduling.Tests.Agendamentos;
 

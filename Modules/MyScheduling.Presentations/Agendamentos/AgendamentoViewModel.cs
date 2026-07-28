@@ -1,5 +1,5 @@
-using MyScheduling.Domain.Entities;
-using MyScheduling.Domain.Enums;
+using MyScheduling.Domain.Entities.Agendamentos;
+using MyScheduling.Domain.Enums.Agendamentos;
 
 namespace MyScheduling.Presentations.Agendamentos;
 

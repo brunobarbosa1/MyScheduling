@@ -1,3 +1,4 @@
+using MyScheduling.DependencyInjection.Commands.Agendamentos;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MyScheduling.DependencyInjection.Commands;

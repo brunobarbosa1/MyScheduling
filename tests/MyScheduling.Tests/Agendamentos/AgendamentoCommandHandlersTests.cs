@@ -1,6 +1,7 @@
-using MyScheduling.Application.Commands;
-using MyScheduling.Domain.Entities;
-using MyScheduling.Domain.Enums;
+using MyScheduling.Application.CommandHandlers.Agendamentos;
+using MyScheduling.Application.Commands.Agendamentos;
+using MyScheduling.Domain.Entities.Agendamentos;
+using MyScheduling.Domain.Enums.Agendamentos;
 using Xunit;
 
 namespace MyScheduling.Tests.Agendamentos;
