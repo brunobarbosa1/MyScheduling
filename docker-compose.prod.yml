@@ -1,13 +1,15 @@
 # ==========================================================
 # docker-compose de PRODUÇÃO do MyScheduling (PostgreSQL + API).
 #
-# As variáveis vêm do arquivo .env na raiz (criado manualmente
-# na VPS, nunca commitado). Executar a partir da raiz:
+# As variáveis vêm do arquivo .env.prod na raiz (criado manualmente
+# na VPS, nunca commitado). O nome .env.prod evita que o Docker
+# Compose o carregue automaticamente no ambiente local — por isso
+# o --env-file é obrigatório. Executar a partir da raiz:
 #
-#   docker compose -f docker-compose.prod.yml up -d --build
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
 #
 # Para derrubar:
-#   docker compose -f docker-compose.prod.yml down
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml down
 #
 # O Postgres NÃO é exposto publicamente: a API o acessa pela
 # rede interna do Docker (db:5432). Para acessar o banco da sua
