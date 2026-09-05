@@ -63,11 +63,10 @@ public sealed class AgendamentoController : ApiControllerBase
     public async Task<IActionResult> Criar([FromBody] CriarAgendamentoCommand command, CancellationToken cancellationToken)
     {
         var result = await _criarAgendamentoCommandHandler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return HandleFailure(result.Error);
-
-        return Created($"/api/agendamentos/{result.Value.Id}", result.Value);
+        
+        return result.IsFailure
+            ? HandleFailure(result.Error)
+            : Created($"/api/agendamentos/{result.Value.Id}", result.Value);
     }
 
     [HttpPut("{id:guid}")]
