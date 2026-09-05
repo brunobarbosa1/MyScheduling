@@ -10,11 +10,11 @@ Escopo da V1: um único usuário administrador gerenciando agendamentos (criar, 
 
 | Camada | Tecnologia |
 | --- | --- |
-| Runtime | .NET 8 (`net8.0`) |
+| Runtime | .NET 10 (`net10.0`) |
 | API | ASP.NET Core Web API (Controllers) |
-| Persistência | Entity Framework Core 8 + Npgsql |
+| Persistência | Entity Framework Core 10 + Npgsql |
 | Banco | PostgreSQL 16 |
-| Validação | FluentValidation 11 |
+| Validação | FluentValidation 12 |
 | Documentação | Swagger / Swashbuckle |
 | Testes | xUnit |
 | Infra local | Docker Compose |
@@ -23,7 +23,7 @@ Escopo da V1: um único usuário administrador gerenciando agendamentos (criar, 
 
 ## Pré-requisitos
 
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download) ou superior (o projeto tem como alvo `net8.0`; SDKs mais novos compilam normalmente)
+- [.NET SDK 10.0](https://dotnet.microsoft.com/download) (o projeto tem como alvo `net10.0`)
 - [Docker](https://docs.docker.com/get-docker/) com Docker Compose
 - Opcional: `dotnet-ef` para trabalhar com migrations
   ```bash
@@ -55,7 +55,18 @@ Todos os valores têm default de desenvolvimento, então **nenhum arquivo `.env`
 
 > Se mudar qualquer um desses, ajuste também a connection string em `UI/MyScheduling.API/appsettings.Development.json`.
 
-### 2. Rode a API
+### 2. Crie o `appsettings.Development.json`
+
+Esse arquivo não é versionado. Copie o exemplo:
+
+```bash
+cp UI/MyScheduling.API/appsettings.Development.example.json \
+   UI/MyScheduling.API/appsettings.Development.json
+```
+
+O exemplo já vem com a connection string que casa com os defaults do compose, então não é preciso editar nada para o setup padrão.
+
+### 3. Rode a API
 
 ```bash
 dotnet run --project UI/MyScheduling.API
@@ -69,15 +80,9 @@ A API sobe em:
 - HTTPS — https://localhost:7096
 - Swagger UI — http://localhost:5167/swagger *(exposto apenas em `Development`)*
 
-A connection string de desenvolvimento já vem preenchida em `appsettings.Development.json` e casa com os defaults do compose:
+Em outros ambientes a connection string vem da variável `ConnectionStrings__Postgres`. Se nem ela nem o `appsettings.Development.json` estiverem definidos, a aplicação falha no startup com mensagem explícita — é intencional, para não subir apontando para lugar nenhum.
 
-```
-Host=localhost;Port=5432;Database=myscheduling;Username=myscheduling;Password=postgres
-```
-
-Em outros ambientes ela vem da variável `ConnectionStrings__Postgres`. Se nenhuma das duas estiver definida, a aplicação falha no startup com mensagem explícita — é intencional, para não subir apontando para lugar nenhum.
-
-### 3. Derrubando
+### 4. Derrubando
 
 ```bash
 docker compose down          # para o banco, mantém os dados
@@ -97,6 +102,30 @@ dotnet test MyScheduling.slnx
 ```
 
 São testes de unidade puros — sem banco, sem container, sem framework de mock. As dependências são substituídas por fakes escritos à mão (`FakeAgendamentoRepository`, `FixedTimeProvider`), e o foco está nas regras de negócio dos command handlers: sobreposição de horário, agendamento no passado, validação de campos e transições de status.
+
+---
+
+## CI
+
+O workflow em `.github/workflows/ci.yml` roda em push e pull request na `main`, em dois jobs encadeados:
+
+1. **Build e testes** — `restore` → `build -c Release` → `dotnet test`, com cache de pacotes NuGet. O `.trx` fica disponível como artefato da execução.
+2. **Imagem Docker** — depende do job anterior, então nada é publicado sem os testes passarem. Em pull request a imagem é apenas construída (valida o `Dockerfile`); em push na `main` ela é publicada no GitHub Container Registry.
+
+O job usa o SDK **10.0.x**, que já entende o `MyScheduling.slnx` e traz o runtime `net10.0` necessário para executar os testes.
+
+### Imagem publicada
+
+```
+ghcr.io/brunobarbosa1/myscheduling:latest
+ghcr.io/brunobarbosa1/myscheduling:sha-<commit>
+```
+
+A autenticação usa o `GITHUB_TOKEN` do próprio workflow — não é preciso criar nenhum secret. O pacote nasce **privado**; para consumi-lo de fora do GitHub Actions é necessário ou torná-lo público nas configurações do pacote, ou fazer `docker login ghcr.io` com um Personal Access Token de escopo `read:packages`.
+
+### O que ainda não existe
+
+Não há job de deploy. Ele entra quando a VPS existir e puder ser validado de verdade — encaixa como um job novo com `needs: image`. Nesse momento, o `docker-compose.prod.yml` deixa de usar `build:` e passa a usar `image: ghcr.io/brunobarbosa1/myscheduling:latest` (é o `TODO(CI/CD)` anotado no arquivo).
 
 ---
 
