@@ -22,7 +22,8 @@ O foco do projeto é:
 * Entity Framework Core
 * PostgreSQL
 * FluentValidation
-* JWT Authentication
+* Google OAuth 2.0 (Authorization Code + PKCE)
+* JWT Bearer Authentication (token interno emitido pelo backend)
 * Swagger/OpenAPI
 * Result Pattern
 
@@ -104,9 +105,16 @@ Seguir rigorosamente a arquitetura definida no SDD.
 
 ## Usuario
 
-Representa o administrador do sistema.
+Representa uma profissional cadastrada no sistema.
 
-Não existe suporte para múltiplos usuários nesta versão.
+Autenticação exclusivamente via Google. Cada Usuario possui:
+
+* Nome
+* Email
+* GoogleSub (identificador único imutável do Google)
+* Papel (Usuario | Admin)
+
+O sistema é multi-tenant: cada Usuario possui sua agenda isolada.
 
 ---
 
@@ -114,8 +122,11 @@ Não existe suporte para múltiplos usuários nesta versão.
 
 Representa um horário reservado para atendimento.
 
+Pertence a exatamente um Usuario (dono da agenda).
+
 Campos:
 
+* UsuarioId (FK)
 * ClienteNome
 * ClienteTelefone
 * Servico
@@ -123,13 +134,14 @@ Campos:
 * DataHoraInicio
 * DataHoraFim
 * Status
+* TipoPagamento
 * Observacao
 
 ---
 
 # Regras de Negócio
 
-* Não permitir horários sobrepostos.
+* Não permitir horários sobrepostos dentro da agenda do mesmo Usuario (Usuarios distintos podem ter agendamentos no mesmo horário).
 * Não permitir horários no passado.
 * DataHoraFim deve ser maior que DataHoraInicio.
 * Agendamentos cancelados não bloqueiam horários.
@@ -140,20 +152,36 @@ Campos:
 
 # Autenticação
 
-Utilizar JWT Bearer Authentication.
+Google OAuth 2.0 (Authorization Code + PKCE) + JWT Bearer interno.
 
-O sistema possui apenas um usuário administrador.
+O handshake OAuth é feito à mão (HttpClient) sem usar Microsoft.AspNetCore.Authentication.Google.
+
+A validação do ID Token do Google usa apenas Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync (JWKS).
+
+Auto-registro: o primeiro login de uma conta Google desconhecida cria um Usuario. Papel Admin é atribuído no momento da criação se o e-mail estiver em Auth:AdminEmails.
 
 Não implementar:
 
-* Registro de usuário
-* Recuperação de senha
-* Perfis
-* Roles
+* Recuperação de senha (não há senhas)
+* Cadastro manual de usuário
+* Endpoint de refresh token
 
-Todos os endpoints devem exigir autenticação, exceto:
+Endpoints públicos (sem [Authorize]):
 
-POST /api/auth/login
+* GET /api/v1/auth/google/challenge
+* GET /api/v1/auth/google/callback
+
+Todos os demais exigem Bearer token válido.
+
+# Autorização
+
+Papéis: Usuario (padrão) e Admin.
+
+Handlers recebem ICurrentUser (nunca HttpContext direto).
+
+Todas as queries e commands de Agendamento são escopados por UsuarioId. Exceção: Admin lê agendamentos de todos os Usuarios (mas não escreve).
+
+Handlers de update/cancel/complete/delete que encontram Agendamento de outro Usuario retornam NotFound, não Forbidden (não vazar existência).
 
 ---
 

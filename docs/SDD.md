@@ -95,16 +95,22 @@ tests/
 
 ## Usuario
 
-Representa o administrador da aplicação.
+Representa uma profissional cadastrada no sistema.
 
 Campos:
 
 * Id
 * Nome
 * Email
-* PasswordHash
-* CreatedAt
-* UpdatedAt
+* GoogleSub (identificador único e imutável do Google)
+* Papel (Usuario | Admin)
+* CriadoEm
+* AtualizadoEm
+
+## PapelUsuario
+
+* Usuario
+* Admin
 
 ---
 
@@ -113,6 +119,7 @@ Campos:
 Campos:
 
 * Id
+* UsuarioId (FK para Usuario — dono da agenda)
 * ClienteNome
 * ClienteTelefone
 * Servico
@@ -120,9 +127,12 @@ Campos:
 * DataHoraInicio
 * DataHoraFim
 * Status
+* TipoPagamento
 * Observacao
 * CriadoEm
 * AtualizadoEm
+
+Cada Agendamento pertence a exatamente um Usuario. Usuarios distintos não compartilham agendamentos.
 
 ---
 
@@ -138,7 +148,8 @@ Campos:
 
 ## Auth
 
-* LoginUser
+* IniciarLoginGoogle (gera state + PKCE, monta URL de autorização do Google)
+* CompletarLoginGoogle (valida state, troca code por tokens, valida ID Token, cria/localiza Usuario, emite JWT)
 
 ## Agendamento
 
@@ -228,47 +239,92 @@ Entity Framework Migrations
 
 Estratégia:
 
-JWT Bearer Authentication
+Google OAuth 2.0 (Authorization Code + PKCE) + JWT Bearer interno emitido pelo backend.
 
-Fluxo:
+## Fluxo
 
-Login
-↓
-Validação das credenciais
-↓
-Geração do JWT
-↓
-Acesso aos endpoints protegidos
+1. Cliente chama GET /api/v1/auth/google/challenge
+2. Backend gera state (anti-CSRF) e par PKCE (code_verifier + code_challenge), persiste em cache com expiração curta
+3. Backend redireciona para authorization endpoint do Google
+4. Usuário autentica e consente
+5. Google redireciona para GET /api/v1/auth/google/callback?code=...&state=...
+6. Backend valida state, recupera code_verifier
+7. Backend troca code + code_verifier por tokens no endpoint do Google (server-to-server)
+8. Backend valida assinatura, issuer e audience do ID Token
+9. Backend cria (primeiro login) ou localiza Usuario pelo GoogleSub
+10. Backend emite JWT próprio com claims sub, email, name, role
+11. Cliente usa esse JWT como Bearer nos endpoints protegidos
+
+## Bibliotecas
+
+* HttpClient tipado para chamadas ao Google
+* Google.Apis.Auth (apenas GoogleJsonWebSignature.ValidateAsync para validação do ID Token via JWKS)
+* Microsoft.AspNetCore.Authentication.JwtBearer + Microsoft.IdentityModel.Tokens para emitir e validar o JWT interno
+
+Não usamos Microsoft.AspNetCore.Authentication.Google (esconde detalhes do fluxo que queremos controlar explicitamente).
+
+## Configuração
+
+* Google:ClientId
+* Google:ClientSecret
+* Google:RedirectUri
+* Google:Scopes (openid email profile)
+* Jwt:Issuer, Jwt:Audience, Jwt:Key, Jwt:ExpirationSeconds
+* Auth:AdminEmails (lista)
 
 ---
 
 # Endpoints de Autenticação
 
-POST /api/auth/login
+GET /api/v1/auth/google/challenge → 302 para accounts.google.com
 
-Request:
+GET /api/v1/auth/google/callback?code=...&state=...
 
-{
-"email": "[admin@salao.com](mailto:admin@salao.com)",
-"password": "123456"
-}
-
-Response:
+Response de sucesso:
 
 {
-"accessToken": "jwt-token",
-"expiresIn": 3600
+  "accessToken": "jwt-token",
+  "expiresIn": 3600
 }
 
 ---
 
-# Usuário Inicial
+# Usuários
 
-O sistema possuirá apenas um usuário administrador.
+Não há usuário inicial pré-criado.
 
-O usuário será criado automaticamente por migration ou seed inicial.
+Auto-registro: o primeiro login de uma conta Google desconhecida cria automaticamente um Usuario.
 
-Não haverá cadastro de usuários na V1.
+Papel Admin é atribuído no momento da criação se o e-mail constar em Auth:AdminEmails.
+
+---
+
+# Autorização e Multi-tenancy
+
+Todos os endpoints (exceto os dois de autenticação) exigem Bearer token válido via atributo [Authorize].
+
+## Contexto do usuário atual
+
+Interface ICurrentUser exposta em MyScheduling.Application resolve para a implementação em MyScheduling.API que lê as claims do HttpContext.
+
+Handlers dependem apenas da interface, nunca do HttpContext.
+
+## Isolamento
+
+Toda operação sobre Agendamento é escopada por UsuarioId:
+
+* Commands: associam o Agendamento ao Usuario atual na criação; verificam ownership antes de update, cancel, complete e delete
+* Queries: filtram por UsuarioId == currentUser.Id
+
+## Papel Admin
+
+Exceção única ao filtro de ownership: quando currentUser.Papel == Admin, queries de listagem retornam agendamentos de todos os Usuarios.
+
+Commands de escrita não têm exceção para Admin — Admin escreve apenas na própria agenda.
+
+## Proteção contra IDOR
+
+Handlers de update, cancel, complete e delete que encontram um agendamento cujo UsuarioId não corresponde ao usuário atual devem retornar NotFound (não Forbidden), para não vazar existência de recursos alheios.
 
 ---
 

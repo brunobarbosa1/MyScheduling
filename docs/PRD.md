@@ -2,13 +2,13 @@
 
 ## 1. Visão Geral
 
-Sistema web para gerenciamento de agendamentos de uma profissional autônoma.
+Sistema web para gerenciamento de agendamentos de profissionais autônomas.
 
-O objetivo principal é substituir a agenda física utilizada atualmente, centralizando os agendamentos em uma aplicação simples, rápida e intuitiva.
+O objetivo principal é substituir a agenda física, centralizando os agendamentos em uma aplicação simples, rápida e intuitiva.
 
-O sistema será utilizado inicialmente por uma única profissional.
+O sistema suporta múltiplas profissionais, cada uma com sua agenda completamente isolada das demais.
 
-Não existe suporte para múltiplos usuários ou múltiplos estabelecimentos nesta versão.
+Existe um papel de Administrador com visão global de leitura sobre todas as agendas do sistema.
 
 ---
 
@@ -30,8 +30,11 @@ Permitir que a profissional:
 
 ## Incluído
 
-* Login de administrador.
-* Autenticação via JWT.
+* Autenticação via Google OAuth 2.0 (Authorization Code + PKCE).
+* Sessão via JWT emitido pelo backend.
+* Auto-registro de profissional no primeiro login com Google.
+* Papel de Administrador com leitura global das agendas.
+* Isolamento de dados por profissional.
 * Cadastro de agendamentos.
 * Consulta de agendamentos.
 * Atualização de agendamentos.
@@ -43,29 +46,40 @@ Permitir que a profissional:
 
 ## Não Incluído
 
+* Autenticação por senha.
+* Convite explícito de usuários por admin.
 * Cadastro de clientes.
-* Cadastro de profissionais.
-* Agendamento pelo cliente.
+* Agendamento pelo cliente final.
 * Integração com WhatsApp.
 * Integração com Google Agenda.
 * Notificações.
 * Relatórios.
 * Dashboard financeiro.
-* Multiusuário.
-* Multiempresa.
-* Aplicativo mobile.
+* Multiempresa (organizações agrupando usuários).
+* Aplicativo mobile nativo.
+* Auto-desativação ou exclusão de conta pela profissional.
 
 ---
 
-# 4. Usuário do Sistema
+# 4. Usuários do Sistema
 
-## Administrador
+O sistema possui dois papéis, ambos autenticados via Google.
 
-Responsável pelo salão.
+## Usuario (padrão)
 
-Possui acesso total ao sistema.
+Profissional que gerencia a própria agenda.
 
-Será o único usuário da aplicação nesta versão.
+Permissões: CRUD completo apenas sobre os agendamentos do próprio Usuario.
+
+## Admin
+
+Profissional com privilégio adicional de leitura global.
+
+Permissões: as mesmas do Usuario + leitura de agendamentos de qualquer Usuario.
+
+Não pode criar, atualizar ou excluir agendamentos de outros Usuarios.
+
+O papel Admin é atribuído automaticamente no primeiro login se o e-mail da conta Google constar na whitelist de administradores da configuração (Auth:AdminEmails).
 
 ---
 
@@ -106,20 +120,22 @@ Atendimento cancelado.
 
 # 7. Autenticação
 
-O sistema possui apenas um perfil de acesso.
+Autenticação exclusivamente via Google OAuth 2.0 usando o fluxo Authorization Code com PKCE.
 
-## Administrador
+Após validação bem-sucedida do login, o backend emite um JWT interno usado como Bearer token nas requisições subsequentes.
 
-Permissões:
+## Auto-registro
 
-* Criar agendamentos
-* Atualizar agendamentos
-* Cancelar agendamentos
-* Concluir agendamentos
-* Excluir agendamentos
-* Consultar agenda
+O primeiro login de uma conta Google desconhecida cria automaticamente um novo Usuario.
 
-Todos os endpoints exigem autenticação, exceto login.
+Se o e-mail estiver na whitelist de administradores (Auth:AdminEmails) no momento da criação, o Usuario recebe papel Admin. Caso contrário, papel Usuario.
+
+## Endpoints públicos
+
+* GET /api/v1/auth/google/challenge — inicia o fluxo (redirect para o Google)
+* GET /api/v1/auth/google/callback — callback do Google (troca code por tokens e emite JWT)
+
+Todos os demais endpoints exigem Bearer token válido.
 
 ---
 
@@ -127,7 +143,7 @@ Todos os endpoints exigem autenticação, exceto login.
 
 ### RN001
 
-Não permitir horários sobrepostos.
+Não permitir horários sobrepostos dentro da agenda do mesmo Usuario. Agendamentos de Usuarios distintos não conflitam entre si.
 
 ### RN002
 
@@ -152,6 +168,10 @@ ValorServico é opcional e pode ser definido depois da criação, mas, quando in
 ---
 
 # 9. Casos de Uso
+
+## Autenticar via Google
+
+Iniciar o fluxo OAuth, retornar do consentimento com código de autorização, receber JWT interno para uso nas próximas requisições.
 
 ## Criar Agendamento
 
