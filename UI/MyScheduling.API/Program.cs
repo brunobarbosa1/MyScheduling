@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using MyScheduling.DependencyInjection.Commands;
 using MyScheduling.DependencyInjection.Persistence;
-using MyScheduling.DependencyInjection.Queries;
+using MyScheduling.DependencyInjection.Queries.Agendamentos;
 using MyScheduling.DependencyInjection.Services;
 
 var builder = WebApplication.CreateBuilder(args);
