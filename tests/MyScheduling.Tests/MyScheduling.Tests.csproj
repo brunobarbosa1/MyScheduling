@@ -18,6 +18,7 @@
         <ProjectReference Include="..\..\Modules\MyScheduling.Application\MyScheduling.Application.csproj" />
         <ProjectReference Include="..\..\Modules\MyScheduling.Domain\MyScheduling.Domain.csproj" />
         <ProjectReference Include="..\..\Modules\MyScheduling.Presentations\MyScheduling.Presentations.csproj" />
+        <ProjectReference Include="..\..\Modules\MyScheduling.Service\MyScheduling.Service.csproj" />
         <ProjectReference Include="..\..\Core\MyScheduling.Common\MyScheduling.Common.csproj" />
     </ItemGroup>
 
